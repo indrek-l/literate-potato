@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+message StartGameRequest {
+
+}
+message StartGameResponse {
+
+}
+
+message SetSymbolRequest {
+    string symbol = 1;
+    int32 position = 2;
+}
+message SetSymbolResponse {
+    bool success = 1;
+}
+
+message ListBoardRequest {
+}
+message ListBoardResponse {
+    repeated string board = 1;
+}
+
+message SetNodeTimeRequest {
+    int32 requester_node = 1;
+    int32 target_node = 2;
+    string timestamp = 3;
+}
+message SetNodeTimeResponse {
+    string timestamp = 1;
+    bool success = 2;
+}
+
+message CheckWinnerRequest {
+
+}
+message CheckWinnerResponse {
+
+}
+
+message CheckTimeoutRequest {
+
+}
+message CheckTimeoutResponse {
+
+}
+
+message ElectionRequest {
+    repeated int32 candidates = 1;
+    int32 leader = 2;
+}
+message ElectionResponse {
+    int32 leader = 1;
+    bool success = 2;
+}
+
+service TicTacToe {
+    rpc start_game (StartGameRequest) returns (StartGameResponse) {};
+    rpc set_symbol (SetSymbolRequest) returns (SetSymbolResponse) {};
+    rpc list_board (ListBoardRequest) returns (ListBoardResponse) {};
+    rpc set_node_time (SetNodeTimeRequest) returns (SetNodeTimeResponse) {};
+    rpc check_winner (CheckWinnerRequest) returns (CheckWinnerResponse) {};
+    rpc check_timeout (CheckTimeoutRequest) returns (CheckTimeoutResponse) {};
+    rpc send_election_message (ElectionRequest) returns (ElectionResponse) {};
+}
