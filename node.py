@@ -24,25 +24,7 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
     def __init__(self, pid):
         self.pid = pid
         self.time_drift = 0
-    
-    def start_game(self, request, context):
-        sender = request.candidate_pids[-1]
-        initiator = request.candidate_pids[0]
-        #print(f"Received start_game request from Node-{sender}.")
-        if self.pid == initiator:
-            if request.leader_pid == -1:
-                highest_pid = max(request.candidate_pids)
-                if self.pid == highest_pid:
-                    return tictactoe_pb2.StartGameResponse(leader_pid=self.pid, timestamp=datetime.now().strftime('%H:%M:%S'))
-                leader_message = tictactoe_pb2.StartGameRequest(leader_pid=highest_pid, candidate_pids=[self.pid], timestamp=datetime.now().strftime('%H:%M:%S'))
-                return send_start_message(leader_message, self.pid)            
-            if request.leader_pid in request.candidate_pids:
-                return tictactoe_pb2.StartGameResponse(leader_pid=request.leader_pid, timestamp=datetime.now().strftime('%H:%M:%S'))
-            print("Election unsuccesful. Restarting.")
-            return self.start_game(tictactoe_pb2.StartGameRequest(leader_pid=-1, candidate_pids=[self.pid], timestamp=datetime.now().strftime('%H:%M:%S')))
-        request.candidate_pids.append(self.pid)
-        return send_start_message(request, self.pid)
-    
+
     def set_symbol(self, request, context):
         pass
     
@@ -58,6 +40,25 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
     def check_timeout(self, request, context):
         pass
     
+    def get_node_time(self, request, context):
+        pass
+
+    def election(self, request, context):
+        initiator = request.candidate_pids[0]
+        if self.pid == initiator:
+            if request.leader_pid == -1:
+                highest_pid = max(request.candidate_pids)
+                if self.pid == highest_pid:
+                    return tictactoe_pb2.ElectionResponse(leader_pid=self.pid)
+                leader_message = tictactoe_pb2.ElectionRequest(leader_pid=highest_pid, candidate_pids=[self.pid])
+                return send_election_message(leader_message, self.pid)            
+            if request.leader_pid in request.candidate_pids:
+                return tictactoe_pb2.ElectionResponse(leader_pid=request.leader_pid)
+            print("Election unsuccesful. Restarting.")
+            return self.election(tictactoe_pb2.ElectionRequest(leader_pid=-1, candidate_pids=[self.pid]))
+        request.candidate_pids.append(self.pid)
+        return send_election_message(request, self.pid)
+
 
 class TicTacToeServer:
     def __init__(self, pid):
@@ -76,39 +77,39 @@ class TicTacToeClient:
     def __init__(self, pid):
         self.pid = pid
 
-    def start_elections(self):
+    def elect_leader(self):
+        """Elect a node as a leader using the ring algorithm."""
         print(f"Starting elections")
-        message = tictactoe_pb2.StartGameRequest(leader_pid=-1, candidate_pids=[self.pid], timestamp=datetime.now().strftime('%H:%M:%S'))
-        response = send_start_message(message, self.pid)
-
-        print(f"Election completed successfully. Coordinator ID is {response.leader_pid}")
+        message = tictactoe_pb2.ElectionRequest(leader_pid=-1, candidate_pids=[self.pid])
+        response = send_election_message(message, self.pid)
+        print(f"Election complete. Coordinator is Node-{response.leader_pid}.")
         self.leader_pid = response.leader_pid
+    
+    def synchronize_clocks(self, pid):
+        """Co-ordinate clocks between nodes using Berkeley's algorithm."""
+        print("Synchronizing clocks of all nodes")
 
-        if self.leader_pid == None:
-            print("No other nodes working. I am the leader")
-            self.leader_pid = self.pid
 
 
-# Utility functions
+#--------- Utility functions ---------#
 
 def get_next_node(pid):
     return (pid + 1) % (MAX_PID + 1)
 
-def send_start_message(message, current_pid):
-    """Send message to next working node."""
+def send_election_message(message, current_pid):
+    """Send election message to next working node."""
     next_pid = get_next_node(current_pid)
     while next_pid != current_pid:
         try:
             with grpc.insecure_channel(f"localhost:{PORTS[next_pid]}") as channel:
-                #print(f"Sending message to Node-{next_pid} on port {PORTS[next_pid]}")
                 stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
-                response = stub.start_game(message)
-                return response
+                return stub.election(message)
         except grpc.RpcError:
             print(f"Node-{next_pid} not responding.")
             next_pid = get_next_node(next_pid)
-    return tictactoe_pb2.StartGameResponse(leader_pid=current_pid, timestamp=datetime.now().strftime('%H:%M:%S'))
+    return tictactoe_pb2.ElectionResponse(leader_pid=current_pid)
 
+#-------------------------------------#
 
 def main():
     pid = int(sys.argv[1])
@@ -120,10 +121,9 @@ def main():
     print("Waiting for commands")
     command = input(f"Node-{pid}> ")
     if command.lower() == "start-game":
-        client.start_elections()
+        client.elect_leader()
     else:
         print("Command not found")
-
 
 
 if __name__ == "__main__":

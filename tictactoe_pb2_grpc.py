@@ -14,10 +14,15 @@ class TicTacToeStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.start_game = channel.unary_unary(
-                '/TicTacToe/start_game',
-                request_serializer=tictactoe__pb2.StartGameRequest.SerializeToString,
-                response_deserializer=tictactoe__pb2.StartGameResponse.FromString,
+        self.election = channel.unary_unary(
+                '/TicTacToe/election',
+                request_serializer=tictactoe__pb2.ElectionRequest.SerializeToString,
+                response_deserializer=tictactoe__pb2.ElectionResponse.FromString,
+                )
+        self.get_node_time = channel.unary_unary(
+                '/TicTacToe/get_node_time',
+                request_serializer=tictactoe__pb2.GetNodeTimeRequest.SerializeToString,
+                response_deserializer=tictactoe__pb2.GetNodeTimeResponse.FromString,
                 )
         self.set_symbol = channel.unary_unary(
                 '/TicTacToe/set_symbol',
@@ -49,7 +54,13 @@ class TicTacToeStub(object):
 class TicTacToeServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def start_game(self, request, context):
+    def election(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def get_node_time(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -88,10 +99,15 @@ class TicTacToeServicer(object):
 
 def add_TicTacToeServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'start_game': grpc.unary_unary_rpc_method_handler(
-                    servicer.start_game,
-                    request_deserializer=tictactoe__pb2.StartGameRequest.FromString,
-                    response_serializer=tictactoe__pb2.StartGameResponse.SerializeToString,
+            'election': grpc.unary_unary_rpc_method_handler(
+                    servicer.election,
+                    request_deserializer=tictactoe__pb2.ElectionRequest.FromString,
+                    response_serializer=tictactoe__pb2.ElectionResponse.SerializeToString,
+            ),
+            'get_node_time': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_node_time,
+                    request_deserializer=tictactoe__pb2.GetNodeTimeRequest.FromString,
+                    response_serializer=tictactoe__pb2.GetNodeTimeResponse.SerializeToString,
             ),
             'set_symbol': grpc.unary_unary_rpc_method_handler(
                     servicer.set_symbol,
@@ -129,7 +145,7 @@ class TicTacToe(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def start_game(request,
+    def election(request,
             target,
             options=(),
             channel_credentials=None,
@@ -139,9 +155,26 @@ class TicTacToe(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/TicTacToe/start_game',
-            tictactoe__pb2.StartGameRequest.SerializeToString,
-            tictactoe__pb2.StartGameResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/TicTacToe/election',
+            tictactoe__pb2.ElectionRequest.SerializeToString,
+            tictactoe__pb2.ElectionResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def get_node_time(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/TicTacToe/get_node_time',
+            tictactoe__pb2.GetNodeTimeRequest.SerializeToString,
+            tictactoe__pb2.GetNodeTimeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

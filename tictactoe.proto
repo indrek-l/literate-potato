@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-message StartGameRequest {
-    int32 initiator_pid = 1;
-    int32 leader_pid = 2;
-    repeated int32 candidate_pids = 3;
-    string timestamp = 4;
-}
-message StartGameResponse {
+message ElectionRequest {
     int32 leader_pid = 1;
-    bool election_succesful = 2;
-    string timestamp = 3;
+    repeated int32 candidate_pids = 3;
+}
+message ElectionResponse {
+    int32 leader_pid = 1;
+}
+
+message GetNodeTimeRequest {
+}
+message GetNodeTimeResponse {
+    int32 timestamp = 1;
 }
 
 message SetSymbolRequest {
@@ -51,7 +53,8 @@ message CheckTimeoutResponse {
 }
 
 service TicTacToe {
-    rpc start_game (StartGameRequest) returns (StartGameResponse) {};
+    rpc election (ElectionRequest) returns (ElectionResponse) {};
+    rpc get_node_time (GetNodeTimeRequest) returns (GetNodeTimeResponse) {};
     rpc set_symbol (SetSymbolRequest) returns (SetSymbolResponse) {};
     rpc list_board (ListBoardRequest) returns (ListBoardResponse) {};
     rpc set_node_time (SetNodeTimeRequest) returns (SetNodeTimeResponse) {};
