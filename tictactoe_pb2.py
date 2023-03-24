@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0ftictactoe.proto\"p\n\x10StartGameRequest\x12\x16\n\x0einitiator_node\x18\x01 \x01(\x05\x12\x18\n\x10\x63oordinator_node\x18\x02 \x01(\x05\x12\x17\n\x0f\x63\x61ndidate_nodes\x18\x03 \x03(\x05\x12\x11\n\ttimestamp\x18\x04 \x01(\t\"\\\n\x11StartGameResponse\x12\x18\n\x10\x63oordinator_node\x18\x01 \x01(\x05\x12\x1a\n\x12\x65lection_succesful\x18\x02 \x01(\x08\x12\x11\n\ttimestamp\x18\x03 \x01(\t\"4\n\x10SetSymbolRequest\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x10\n\x08position\x18\x02 \x01(\x05\"$\n\x11SetSymbolResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"\x12\n\x10ListBoardRequest\"\"\n\x11ListBoardResponse\x12\r\n\x05\x62oard\x18\x01 \x03(\t\"T\n\x12SetNodeTimeRequest\x12\x16\n\x0erequester_node\x18\x01 \x01(\x05\x12\x13\n\x0btarget_node\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\t\"9\n\x13SetNodeTimeResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\"\x14\n\x12\x43heckWinnerRequest\"\x15\n\x13\x43heckWinnerResponse\"\x15\n\x13\x43heckTimeoutRequest\"\x16\n\x14\x43heckTimeoutResponse2\xeb\x02\n\tTicTacToe\x12\x35\n\nstart_game\x12\x11.StartGameRequest\x1a\x12.StartGameResponse\"\x00\x12\x35\n\nset_symbol\x12\x11.SetSymbolRequest\x1a\x12.SetSymbolResponse\"\x00\x12\x35\n\nlist_board\x12\x11.ListBoardRequest\x1a\x12.ListBoardResponse\"\x00\x12<\n\rset_node_time\x12\x13.SetNodeTimeRequest\x1a\x14.SetNodeTimeResponse\"\x00\x12;\n\x0c\x63heck_winner\x12\x13.CheckWinnerRequest\x1a\x14.CheckWinnerResponse\"\x00\x12>\n\rcheck_timeout\x12\x14.CheckTimeoutRequest\x1a\x15.CheckTimeoutResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0ftictactoe.proto\"h\n\x10StartGameRequest\x12\x15\n\rinitiator_pid\x18\x01 \x01(\x05\x12\x12\n\nleader_pid\x18\x02 \x01(\x05\x12\x16\n\x0e\x63\x61ndidate_pids\x18\x03 \x03(\x05\x12\x11\n\ttimestamp\x18\x04 \x01(\t\"V\n\x11StartGameResponse\x12\x12\n\nleader_pid\x18\x01 \x01(\x05\x12\x1a\n\x12\x65lection_succesful\x18\x02 \x01(\x08\x12\x11\n\ttimestamp\x18\x03 \x01(\t\"4\n\x10SetSymbolRequest\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x10\n\x08position\x18\x02 \x01(\x05\"$\n\x11SetSymbolResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"\x12\n\x10ListBoardRequest\"\"\n\x11ListBoardResponse\x12\r\n\x05\x62oard\x18\x01 \x03(\t\"R\n\x12SetNodeTimeRequest\x12\x15\n\rrequester_pid\x18\x01 \x01(\x05\x12\x12\n\ntarget_pid\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\t\"9\n\x13SetNodeTimeResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\"\x14\n\x12\x43heckWinnerRequest\"\x15\n\x13\x43heckWinnerResponse\"\x15\n\x13\x43heckTimeoutRequest\"\x16\n\x14\x43heckTimeoutResponse2\xeb\x02\n\tTicTacToe\x12\x35\n\nstart_game\x12\x11.StartGameRequest\x1a\x12.StartGameResponse\"\x00\x12\x35\n\nset_symbol\x12\x11.SetSymbolRequest\x1a\x12.SetSymbolResponse\"\x00\x12\x35\n\nlist_board\x12\x11.ListBoardRequest\x1a\x12.ListBoardResponse\"\x00\x12<\n\rset_node_time\x12\x13.SetNodeTimeRequest\x1a\x14.SetNodeTimeResponse\"\x00\x12;\n\x0c\x63heck_winner\x12\x13.CheckWinnerRequest\x1a\x14.CheckWinnerResponse\"\x00\x12>\n\rcheck_timeout\x12\x14.CheckTimeoutRequest\x1a\x15.CheckTimeoutResponse\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'tictactoe_pb2', globals())
@@ -21,29 +21,29 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _STARTGAMEREQUEST._serialized_start=19
-  _STARTGAMEREQUEST._serialized_end=131
-  _STARTGAMERESPONSE._serialized_start=133
-  _STARTGAMERESPONSE._serialized_end=225
-  _SETSYMBOLREQUEST._serialized_start=227
-  _SETSYMBOLREQUEST._serialized_end=279
-  _SETSYMBOLRESPONSE._serialized_start=281
-  _SETSYMBOLRESPONSE._serialized_end=317
-  _LISTBOARDREQUEST._serialized_start=319
-  _LISTBOARDREQUEST._serialized_end=337
-  _LISTBOARDRESPONSE._serialized_start=339
-  _LISTBOARDRESPONSE._serialized_end=373
-  _SETNODETIMEREQUEST._serialized_start=375
-  _SETNODETIMEREQUEST._serialized_end=459
-  _SETNODETIMERESPONSE._serialized_start=461
-  _SETNODETIMERESPONSE._serialized_end=518
-  _CHECKWINNERREQUEST._serialized_start=520
-  _CHECKWINNERREQUEST._serialized_end=540
-  _CHECKWINNERRESPONSE._serialized_start=542
-  _CHECKWINNERRESPONSE._serialized_end=563
-  _CHECKTIMEOUTREQUEST._serialized_start=565
-  _CHECKTIMEOUTREQUEST._serialized_end=586
-  _CHECKTIMEOUTRESPONSE._serialized_start=588
-  _CHECKTIMEOUTRESPONSE._serialized_end=610
-  _TICTACTOE._serialized_start=613
-  _TICTACTOE._serialized_end=976
+  _STARTGAMEREQUEST._serialized_end=123
+  _STARTGAMERESPONSE._serialized_start=125
+  _STARTGAMERESPONSE._serialized_end=211
+  _SETSYMBOLREQUEST._serialized_start=213
+  _SETSYMBOLREQUEST._serialized_end=265
+  _SETSYMBOLRESPONSE._serialized_start=267
+  _SETSYMBOLRESPONSE._serialized_end=303
+  _LISTBOARDREQUEST._serialized_start=305
+  _LISTBOARDREQUEST._serialized_end=323
+  _LISTBOARDRESPONSE._serialized_start=325
+  _LISTBOARDRESPONSE._serialized_end=359
+  _SETNODETIMEREQUEST._serialized_start=361
+  _SETNODETIMEREQUEST._serialized_end=443
+  _SETNODETIMERESPONSE._serialized_start=445
+  _SETNODETIMERESPONSE._serialized_end=502
+  _CHECKWINNERREQUEST._serialized_start=504
+  _CHECKWINNERREQUEST._serialized_end=524
+  _CHECKWINNERRESPONSE._serialized_start=526
+  _CHECKWINNERRESPONSE._serialized_end=547
+  _CHECKTIMEOUTREQUEST._serialized_start=549
+  _CHECKTIMEOUTREQUEST._serialized_end=570
+  _CHECKTIMEOUTRESPONSE._serialized_start=572
+  _CHECKTIMEOUTRESPONSE._serialized_end=594
+  _TICTACTOE._serialized_start=597
+  _TICTACTOE._serialized_end=960
 # @@protoc_insertion_point(module_scope)

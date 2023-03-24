@@ -14,7 +14,7 @@ def pass_election_message(message, current_pid, ports):
     for i in itertools.chain(range(current_pid + 1, len(ports)), range(current_pid)):
         try:
             channel = grpc.insecure_channel(f"localhost:{ports[i]}")  # TODO Mis siia localhost asemele tuleb?
-            stub = tictactoe_pb2_grpc.BubbleSorterStub(channel)
+            stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
             return stub.elect(message)
         except:
             continue

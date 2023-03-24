@@ -1,13 +1,13 @@
 syntax = "proto3";
 
 message StartGameRequest {
-    int32 initiator_node = 1;
-    int32 coordinator_node = 2; // Selected as the leader
-    repeated int32 candidate_nodes = 3;
+    int32 initiator_pid = 1;
+    int32 leader_pid = 2;
+    repeated int32 candidate_pids = 3;
     string timestamp = 4;
 }
 message StartGameResponse {
-    int32 coordinator_node = 1;
+    int32 leader_pid = 1;
     bool election_succesful = 2;
     string timestamp = 3;
 }
@@ -27,8 +27,8 @@ message ListBoardResponse {
 }
 
 message SetNodeTimeRequest {
-    int32 requester_node = 1;
-    int32 target_node = 2;
+    int32 requester_pid = 1;
+    int32 target_pid = 2;
     string timestamp = 3;
 }
 message SetNodeTimeResponse {
