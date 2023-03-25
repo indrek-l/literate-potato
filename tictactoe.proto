@@ -11,7 +11,7 @@ message ElectionResponse {
 message GetNodeTimeRequest {
 }
 message GetNodeTimeResponse {
-    int32 timestamp = 1;
+    int64 timestamp = 1;
 }
 
 message SetSymbolRequest {
@@ -34,8 +34,6 @@ message SetNodeTimeRequest {
     string timestamp = 3;
 }
 message SetNodeTimeResponse {
-    string timestamp = 1;
-    bool success = 2;
 }
 
 message CheckWinnerRequest {
