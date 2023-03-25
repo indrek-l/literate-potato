@@ -36,7 +36,7 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
     def set_node_time(self, request, context):
         if request.requester_pid == LEADER_PID or LEADER_PID == -1: # :unamused:
             CLOCK = request.timestamp
-            return tictactoe_pb2.SetNodeTimeResponse(message=f"Node-{PID} new clock {datetime.fromtimestamp(CLOCK).strftime('%H:%m:%S')}")
+            return tictactoe_pb2.SetNodeTimeResponse(message=f"Node-{PID} new clock {datetime.fromtimestamp(CLOCK).strftime('%H:%M:%S')}")
         return tictactoe_pb2.SetNodeTimeResponse(message = f"Only the game master (Node-{LEADER_PID}) can modify the clock of Node-{PID}")
 
     def election(self, request, context):
@@ -91,7 +91,7 @@ class TicTacToeClient:
             except grpc.RpcError as e:
                 print(f"Node-{i} not responding: {e.details()}")  # Exception printed for debugging. Delete later.
         diffs = [e[1] - e[0] for e in combinations(node_times, 2)]
-        return time() + sum(diffs) / len(diffs)
+        return time() + (sum(diffs) / len(diffs))
 
     def synchronize_clocks(self):
         """Co-ordinate clocks between nodes using Berkeley's algorithm. Set synchronized time to server clocks."""
@@ -104,7 +104,7 @@ class TicTacToeClient:
                     response = stub.set_node_time(request)
                     print(response.message)
             except grpc.RpcError as e:
-                print(f"Node-{i} not responding: {e}")  # Exception printed for debugging. Delete later.
+                print(f"Node-{i} not responding: {e.details()}")  # Exception printed for debugging. Delete later.
 
 
 
@@ -135,12 +135,13 @@ def main():
     sleep(2)  # Wait until server gets up and running
 
     print("Waiting for commands")
-    command = input(f"Node-{PID}> ")
-    if command.lower() == "start-game":
-        client.synchronize_clocks()
-        client.elect_leader()
-    else:
-        print("Command not found")
+    while True:
+        command = input(f"Node-{PID}> ")
+        if command.lower() == "start-game":
+            client.synchronize_clocks()
+            client.elect_leader()
+        else:
+            print("Command not found")
 
 
 if __name__ == "__main__":
