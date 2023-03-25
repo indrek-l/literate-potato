@@ -2,7 +2,7 @@ syntax = "proto3";
 
 message ElectionRequest {
     int32 leader_pid = 1;
-    repeated int32 candidate_pids = 3;
+    repeated int32 candidate_pids = 2;
 }
 message ElectionResponse {
     int32 leader_pid = 1;
@@ -11,9 +11,19 @@ message ElectionResponse {
 message GetNodeTimeRequest {
 }
 message GetNodeTimeResponse {
-    int64 timestamp = 1;
+    float timestamp = 1;
 }
 
+message SetNodeTimeRequest {
+    int32 requester_pid = 1;
+    int32 target_pid = 2;
+    float timestamp = 3;
+}
+message SetNodeTimeResponse {
+    string message = 1;
+}
+
+// TODO
 message SetSymbolRequest {
     string symbol = 1;
     int32 position = 2;
@@ -28,26 +38,14 @@ message ListBoardResponse {
     repeated string board = 1;
 }
 
-message SetNodeTimeRequest {
-    int32 requester_pid = 1;
-    int32 target_pid = 2;
-    string timestamp = 3;
-}
-message SetNodeTimeResponse {
-}
-
 message CheckWinnerRequest {
-
 }
 message CheckWinnerResponse {
-
 }
 
 message CheckTimeoutRequest {
-
 }
 message CheckTimeoutResponse {
-
 }
 
 service TicTacToe {
