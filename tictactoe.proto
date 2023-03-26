@@ -5,15 +5,11 @@ message StartingPlayerMessage {
     string symbol = 2;
 }
 message StartingPlayerResponse {
-
 }
 
 message InitLeaderRequest {
-
 }
-
 message InitLeaderResponse {
-
 }
 
 message ElectionRequest {
@@ -39,7 +35,6 @@ message SetNodeTimeResponse {
     string message = 1;
 }
 
-// TODO
 message SetSymbolRequest {
     string symbol = 1;
     int32 position = 2;
@@ -63,7 +58,7 @@ message CheckTimeoutResponse {
 }
 
 message AnnounceWinnerRequest {
-    int32 winner = 1;
+    string message = 1;
 }
 message AnnounceWinnerResponse {
 }
