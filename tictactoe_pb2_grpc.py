@@ -14,6 +14,11 @@ class TicTacToeStub(object):
         Args:
             channel: A grpc.Channel.
         """
+        self.init_leader = channel.unary_unary(
+                '/TicTacToe/init_leader',
+                request_serializer=tictactoe__pb2.InitLeaderRequest.SerializeToString,
+                response_deserializer=tictactoe__pb2.InitLeaderResponse.FromString,
+                )
         self.election = channel.unary_unary(
                 '/TicTacToe/election',
                 request_serializer=tictactoe__pb2.ElectionRequest.SerializeToString,
@@ -53,6 +58,12 @@ class TicTacToeStub(object):
 
 class TicTacToeServicer(object):
     """Missing associated documentation comment in .proto file."""
+
+    def init_leader(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def election(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -99,6 +110,11 @@ class TicTacToeServicer(object):
 
 def add_TicTacToeServicer_to_server(servicer, server):
     rpc_method_handlers = {
+            'init_leader': grpc.unary_unary_rpc_method_handler(
+                    servicer.init_leader,
+                    request_deserializer=tictactoe__pb2.InitLeaderRequest.FromString,
+                    response_serializer=tictactoe__pb2.InitLeaderResponse.SerializeToString,
+            ),
             'election': grpc.unary_unary_rpc_method_handler(
                     servicer.election,
                     request_deserializer=tictactoe__pb2.ElectionRequest.FromString,
@@ -143,6 +159,23 @@ def add_TicTacToeServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class TicTacToe(object):
     """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def init_leader(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/TicTacToe/init_leader',
+            tictactoe__pb2.InitLeaderRequest.SerializeToString,
+            tictactoe__pb2.InitLeaderResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def election(request,
