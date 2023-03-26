@@ -21,14 +21,22 @@ LEADER_PID = -1
 class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
     def __init__(self):
         self.board = None
-        self.players = None
+        self.nodes = None
         self.symbols = None
+        self.moving = -1
 
     def set_symbol(self, request, context):
-        if self.moving_node == -1 or self.moving_node == request.node:
-            if self.board[request.position-1] == "_":
-                self.board[request.position-1] = f"{request.symbol}:{datetime.fromtimestamp(request.timestamp).strftime('%H:%M:%S')}"
-        else:
+        if self.moving == request.sender_node:
+            if self.symbols[self.moving] == request.symbol:
+                if self.board[request.position-1] == "_":
+                    self.board[request.position-1] = f"{request.symbol}:{datetime.fromtimestamp(request.timestamp).strftime('%H:%M:%S')}"
+                    return tictactoe_pb2.SetSymbolResponse(success=True)
+                
+                return tictactoe_pb2.SetSymbolResponse(success=False, message=f"Position {request.position} is taken. Try again")
+            
+            return tictactoe_pb2.SetSymbolResponse(success=False, message=f"Your symbol is {self.symbols[request.sender_node]} and not {request.symbol}. Try again.")
+
+        return tictactoe_pb2.SetSymbolResponse(success=False, message=f"It is not your turn. Node-{self.nodes[self.moving]} moves next")
             
     def list_board(self, request, context):
         pass
@@ -75,17 +83,19 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
 
     def init_leader(self, request, context):
         self.board = [ "_" for i in range[9] ]
-        self.players = random.shuffle([ i for i in range(MAX_PID + 1)].remove(PID))
+        self.nodes = [ i for i in range(MAX_PID + 1)].remove(PID)
         self.symbols = random.shuffle(["X", "O"])
+        self.moving = random.randint(2)
 
-        for player in self.players:
+        for player in self.nodes:
             with grpc.insecure_channel(f"localhost:{PORTS[player]}") as channel:
                 stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
-                message = tictactoe_pb2.StartingPlayerMessage(starting_node=self.players[0], symbol=self.symbols[self.players.index(player)])
-                response = stub.starting_player(message)
+                message = tictactoe_pb2.StartingPlayerMessage(starting_node=self.nodes[self.moving], symbol=self.symbols[self.nodes.index(player)])
+                stub.starting_player(message)
     
     def starting_player(self, request, context):
-        pass
+        print(f"Your symbol is {request.symbol}.")
+        print(f"Node-{request.starting_node} goes first.")
 
 class TicTacToeServer:
     def __init__(self):

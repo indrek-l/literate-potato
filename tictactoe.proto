@@ -43,10 +43,12 @@ message SetNodeTimeResponse {
 message SetSymbolRequest {
     string symbol = 1;
     int32 position = 2;
-    float timestamp =3;
+    float timestamp = 3;
+    int32 sender_node = 4;
 }
 message SetSymbolResponse {
     bool success = 1;
+    string message = 2;
 }
 
 message ListBoardRequest {
