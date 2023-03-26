@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0ftictactoe.proto\">\n\x15StartingPlayerMessage\x12\x15\n\rstarting_node\x18\x01 \x01(\x05\x12\x0e\n\x06symbol\x18\x02 \x01(\t\"\x18\n\x16StartingPlayerResponse\"\x13\n\x11InitLeaderRequest\"\x14\n\x12InitLeaderResponse\"=\n\x0f\x45lectionRequest\x12\x12\n\nleader_pid\x18\x01 \x01(\x05\x12\x16\n\x0e\x63\x61ndidate_pids\x18\x02 \x03(\x05\"&\n\x10\x45lectionResponse\x12\x12\n\nleader_pid\x18\x01 \x01(\x05\"\x14\n\x12GetNodeTimeRequest\"(\n\x13GetNodeTimeResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\"R\n\x12SetNodeTimeRequest\x12\x15\n\rrequester_pid\x18\x01 \x01(\x05\x12\x12\n\ntarget_pid\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x02\"&\n\x13SetNodeTimeResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\\\n\x10SetSymbolRequest\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x10\n\x08position\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x02\x12\x13\n\x0bsender_node\x18\x04 \x01(\x05\"5\n\x11SetSymbolResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x12\n\x10ListBoardRequest\"\"\n\x11ListBoardResponse\x12\r\n\x05\x62oard\x18\x01 \x03(\t\"\x14\n\x12\x43heckWinnerRequest\"\x15\n\x13\x43heckWinnerResponse\"\x15\n\x13\x43heckTimeoutRequest\"\x16\n\x14\x43heckTimeoutResponse2\xa5\x04\n\tTicTacToe\x12\x44\n\x0fstarting_player\x12\x16.StartingPlayerMessage\x1a\x17.StartingPlayerResponse\"\x00\x12\x38\n\x0binit_leader\x12\x12.InitLeaderRequest\x1a\x13.InitLeaderResponse\"\x00\x12\x31\n\x08\x65lection\x12\x10.ElectionRequest\x1a\x11.ElectionResponse\"\x00\x12<\n\rget_node_time\x12\x13.GetNodeTimeRequest\x1a\x14.GetNodeTimeResponse\"\x00\x12\x35\n\nset_symbol\x12\x11.SetSymbolRequest\x1a\x12.SetSymbolResponse\"\x00\x12\x35\n\nlist_board\x12\x11.ListBoardRequest\x1a\x12.ListBoardResponse\"\x00\x12<\n\rset_node_time\x12\x13.SetNodeTimeRequest\x1a\x14.SetNodeTimeResponse\"\x00\x12;\n\x0c\x63heck_winner\x12\x13.CheckWinnerRequest\x1a\x14.CheckWinnerResponse\"\x00\x12>\n\rcheck_timeout\x12\x14.CheckTimeoutRequest\x1a\x15.CheckTimeoutResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0ftictactoe.proto\">\n\x15StartingPlayerMessage\x12\x15\n\rstarting_node\x18\x01 \x01(\x05\x12\x0e\n\x06symbol\x18\x02 \x01(\t\"\x18\n\x16StartingPlayerResponse\"\x13\n\x11InitLeaderRequest\"\x14\n\x12InitLeaderResponse\"=\n\x0f\x45lectionRequest\x12\x12\n\nleader_pid\x18\x01 \x01(\x05\x12\x16\n\x0e\x63\x61ndidate_pids\x18\x02 \x03(\x05\"&\n\x10\x45lectionResponse\x12\x12\n\nleader_pid\x18\x01 \x01(\x05\"\x14\n\x12GetNodeTimeRequest\"(\n\x13GetNodeTimeResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\"R\n\x12SetNodeTimeRequest\x12\x15\n\rrequester_pid\x18\x01 \x01(\x05\x12\x12\n\ntarget_pid\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x02\"&\n\x13SetNodeTimeResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\\\n\x10SetSymbolRequest\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x10\n\x08position\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x02\x12\x13\n\x0bsender_node\x18\x04 \x01(\x05\"5\n\x11SetSymbolResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x12\n\x10ListBoardRequest\"\"\n\x11ListBoardResponse\x12\r\n\x05\x62oard\x18\x01 \x03(\t\"\x15\n\x13\x43heckTimeoutRequest\"\x16\n\x14\x43heckTimeoutResponse\"\'\n\x15\x41nnounceWinnerRequest\x12\x0e\n\x06winner\x18\x01 \x01(\x05\"\x18\n\x16\x41nnounceWinnerResponse2\xae\x04\n\tTicTacToe\x12\x44\n\x0f\x61nnounce_winner\x12\x16.AnnounceWinnerRequest\x1a\x17.AnnounceWinnerResponse\"\x00\x12\x44\n\x0fstarting_player\x12\x16.StartingPlayerMessage\x1a\x17.StartingPlayerResponse\"\x00\x12\x38\n\x0binit_leader\x12\x12.InitLeaderRequest\x1a\x13.InitLeaderResponse\"\x00\x12\x31\n\x08\x65lection\x12\x10.ElectionRequest\x1a\x11.ElectionResponse\"\x00\x12<\n\rget_node_time\x12\x13.GetNodeTimeRequest\x1a\x14.GetNodeTimeResponse\"\x00\x12\x35\n\nset_symbol\x12\x11.SetSymbolRequest\x1a\x12.SetSymbolResponse\"\x00\x12\x35\n\nlist_board\x12\x11.ListBoardRequest\x1a\x12.ListBoardResponse\"\x00\x12<\n\rset_node_time\x12\x13.SetNodeTimeRequest\x1a\x14.SetNodeTimeResponse\"\x00\x12>\n\rcheck_timeout\x12\x14.CheckTimeoutRequest\x1a\x15.CheckTimeoutResponse\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'tictactoe_pb2', globals())
@@ -48,14 +48,14 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _LISTBOARDREQUEST._serialized_end=610
   _LISTBOARDRESPONSE._serialized_start=612
   _LISTBOARDRESPONSE._serialized_end=646
-  _CHECKWINNERREQUEST._serialized_start=648
-  _CHECKWINNERREQUEST._serialized_end=668
-  _CHECKWINNERRESPONSE._serialized_start=670
-  _CHECKWINNERRESPONSE._serialized_end=691
-  _CHECKTIMEOUTREQUEST._serialized_start=693
-  _CHECKTIMEOUTREQUEST._serialized_end=714
-  _CHECKTIMEOUTRESPONSE._serialized_start=716
-  _CHECKTIMEOUTRESPONSE._serialized_end=738
-  _TICTACTOE._serialized_start=741
-  _TICTACTOE._serialized_end=1290
+  _CHECKTIMEOUTREQUEST._serialized_start=648
+  _CHECKTIMEOUTREQUEST._serialized_end=669
+  _CHECKTIMEOUTRESPONSE._serialized_start=671
+  _CHECKTIMEOUTRESPONSE._serialized_end=693
+  _ANNOUNCEWINNERREQUEST._serialized_start=695
+  _ANNOUNCEWINNERREQUEST._serialized_end=734
+  _ANNOUNCEWINNERRESPONSE._serialized_start=736
+  _ANNOUNCEWINNERRESPONSE._serialized_end=760
+  _TICTACTOE._serialized_start=763
+  _TICTACTOE._serialized_end=1321
 # @@protoc_insertion_point(module_scope)

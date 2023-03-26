@@ -29,7 +29,7 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
         if self.moving == request.sender_node:
             if self.symbols[self.moving] == request.symbol:
                 if self.board[request.position-1] == "_":
-                    self.board[request.position-1] = f"{request.symbol}:{datetime.fromtimestamp(request.timestamp).strftime('%H:%M:%S')}"
+                    self.board[request.position-1] = (request.symbol, datetime.fromtimestamp(request.timestamp).strftime('%H:%M:%S'))
                     
                     check_winner()
 
@@ -42,11 +42,27 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
         return tictactoe_pb2.SetSymbolResponse(success=False, message=f"It is not your turn. Node-{self.nodes[self.moving]} moves next")
 
     def check_winner(self):
+        winner = None
+        for i in range(3):
+            if '_' != self.board[0 + i*3][0] == self.board[1 + i*3][0] == self.board[2 + i*3][0]:
+                winner = self.board[0 + i*3][0]
+            if '_' != self.board[0 + i][0] == self.board[3 + i][0] == self.board[6 + i][0]:
+                winner = self.board[0 + i][0]
+        if '_' != self.board[0][0] == self.board[4][0] == self.board[8][0]:
+            winner = self.board[0][0]
+        if '_' != self.board[2][0] == self.board[4][0] == self.board[6][0]:
+            winner = self.board[2][0]
+        if not winner and '_' not in self.board:
+            pass
+
+        tictactoe_pb2.AnnounceWinnerRequest(winner=self.symbols.index(winner))
+            
+    def announce_winner(self, request, context):
         pass
 
-
     def list_board(self, request, context):
-        return tictactoe_pb2.ListBoardResponse(board=self.board)
+        print_board = [f"{sym}:<{ts}>" for sym, ts in self.board]
+        return tictactoe_pb2.ListBoardResponse(board=print_board)
     
     def check_timeout(self, request, context):  
         pass

@@ -62,9 +62,16 @@ message CheckTimeoutRequest {
 message CheckTimeoutResponse {
 }
 
+message AnnounceWinnerRequest {
+    int32 winner = 1;
+}
+message AnnounceWinnerResponse {
+}
+
 service TicTacToe {
-    rpc starting_player(StartingPlayerMessage) returns (StartingPlayerResponse) {};
-    rpc init_leader(InitLeaderRequest) returns (InitLeaderResponse) {};
+    rpc announce_winner (AnnounceWinnerRequest) returns (AnnounceWinnerResponse) {};
+    rpc starting_player (StartingPlayerMessage) returns (StartingPlayerResponse) {};
+    rpc init_leader (InitLeaderRequest) returns (InitLeaderResponse) {};
     rpc election (ElectionRequest) returns (ElectionResponse) {};
     rpc get_node_time (GetNodeTimeRequest) returns (GetNodeTimeResponse) {};
     rpc set_symbol (SetSymbolRequest) returns (SetSymbolResponse) {};

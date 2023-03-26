@@ -14,6 +14,11 @@ class TicTacToeStub(object):
         Args:
             channel: A grpc.Channel.
         """
+        self.announce_winner = channel.unary_unary(
+                '/TicTacToe/announce_winner',
+                request_serializer=tictactoe__pb2.AnnounceWinnerRequest.SerializeToString,
+                response_deserializer=tictactoe__pb2.AnnounceWinnerResponse.FromString,
+                )
         self.starting_player = channel.unary_unary(
                 '/TicTacToe/starting_player',
                 request_serializer=tictactoe__pb2.StartingPlayerMessage.SerializeToString,
@@ -49,11 +54,6 @@ class TicTacToeStub(object):
                 request_serializer=tictactoe__pb2.SetNodeTimeRequest.SerializeToString,
                 response_deserializer=tictactoe__pb2.SetNodeTimeResponse.FromString,
                 )
-        self.check_winner = channel.unary_unary(
-                '/TicTacToe/check_winner',
-                request_serializer=tictactoe__pb2.CheckWinnerRequest.SerializeToString,
-                response_deserializer=tictactoe__pb2.CheckWinnerResponse.FromString,
-                )
         self.check_timeout = channel.unary_unary(
                 '/TicTacToe/check_timeout',
                 request_serializer=tictactoe__pb2.CheckTimeoutRequest.SerializeToString,
@@ -63,6 +63,12 @@ class TicTacToeStub(object):
 
 class TicTacToeServicer(object):
     """Missing associated documentation comment in .proto file."""
+
+    def announce_winner(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def starting_player(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -106,12 +112,6 @@ class TicTacToeServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def check_winner(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def check_timeout(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -121,6 +121,11 @@ class TicTacToeServicer(object):
 
 def add_TicTacToeServicer_to_server(servicer, server):
     rpc_method_handlers = {
+            'announce_winner': grpc.unary_unary_rpc_method_handler(
+                    servicer.announce_winner,
+                    request_deserializer=tictactoe__pb2.AnnounceWinnerRequest.FromString,
+                    response_serializer=tictactoe__pb2.AnnounceWinnerResponse.SerializeToString,
+            ),
             'starting_player': grpc.unary_unary_rpc_method_handler(
                     servicer.starting_player,
                     request_deserializer=tictactoe__pb2.StartingPlayerMessage.FromString,
@@ -156,11 +161,6 @@ def add_TicTacToeServicer_to_server(servicer, server):
                     request_deserializer=tictactoe__pb2.SetNodeTimeRequest.FromString,
                     response_serializer=tictactoe__pb2.SetNodeTimeResponse.SerializeToString,
             ),
-            'check_winner': grpc.unary_unary_rpc_method_handler(
-                    servicer.check_winner,
-                    request_deserializer=tictactoe__pb2.CheckWinnerRequest.FromString,
-                    response_serializer=tictactoe__pb2.CheckWinnerResponse.SerializeToString,
-            ),
             'check_timeout': grpc.unary_unary_rpc_method_handler(
                     servicer.check_timeout,
                     request_deserializer=tictactoe__pb2.CheckTimeoutRequest.FromString,
@@ -175,6 +175,23 @@ def add_TicTacToeServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class TicTacToe(object):
     """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def announce_winner(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/TicTacToe/announce_winner',
+            tictactoe__pb2.AnnounceWinnerRequest.SerializeToString,
+            tictactoe__pb2.AnnounceWinnerResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def starting_player(request,
@@ -292,23 +309,6 @@ class TicTacToe(object):
         return grpc.experimental.unary_unary(request, target, '/TicTacToe/set_node_time',
             tictactoe__pb2.SetNodeTimeRequest.SerializeToString,
             tictactoe__pb2.SetNodeTimeResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def check_winner(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/TicTacToe/check_winner',
-            tictactoe__pb2.CheckWinnerRequest.SerializeToString,
-            tictactoe__pb2.CheckWinnerResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
