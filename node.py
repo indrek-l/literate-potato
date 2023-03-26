@@ -30,19 +30,23 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
             if self.symbols[self.moving] == request.symbol:
                 if self.board[request.position-1] == "_":
                     self.board[request.position-1] = f"{request.symbol}:{datetime.fromtimestamp(request.timestamp).strftime('%H:%M:%S')}"
-                    return tictactoe_pb2.SetSymbolResponse(success=True)
+                    
+                    check_winner()
+
+                    return tictactoe_pb2.SetSymbolResponse(success=True, message=f"Move successful. Symbol {request.symbol} set at position {request.position}")
                 
                 return tictactoe_pb2.SetSymbolResponse(success=False, message=f"Position {request.position} is taken. Try again")
             
             return tictactoe_pb2.SetSymbolResponse(success=False, message=f"Your symbol is {self.symbols[request.sender_node]} and not {request.symbol}. Try again.")
 
         return tictactoe_pb2.SetSymbolResponse(success=False, message=f"It is not your turn. Node-{self.nodes[self.moving]} moves next")
-            
+
+    def check_winner(self):
+        pass
+
+
     def list_board(self, request, context):
-        pass
-        
-    def check_winner(self, request, context):
-        pass
+        return tictactoe_pb2.ListBoardResponse(board=self.board)
     
     def check_timeout(self, request, context):  
         pass
@@ -153,7 +157,15 @@ class TicTacToeClient:
             stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
             request = tictactoe_pb2.SetSymbolRequest(symbol=symbol, position=int(position), timestamp=time()+TIME_DIFF)
             response = stub.set_symbol(request)
-            print(response.message)
+            if not response.success:
+                print(response.message)
+
+    def list_board(self):
+        with grpc.insecure_channel(f"localhost:{PORTS[LEADER_PID]}") as channel:
+            stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
+            request = tictactoe_pb2.ListBoardRequest()
+            response = stub.list_board(request)
+            print(response.board)
 
 
 

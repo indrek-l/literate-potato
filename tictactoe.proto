@@ -57,11 +57,6 @@ message ListBoardResponse {
     repeated string board = 1;
 }
 
-message CheckWinnerRequest {
-}
-message CheckWinnerResponse {
-}
-
 message CheckTimeoutRequest {
 }
 message CheckTimeoutResponse {
@@ -75,6 +70,5 @@ service TicTacToe {
     rpc set_symbol (SetSymbolRequest) returns (SetSymbolResponse) {};
     rpc list_board (ListBoardRequest) returns (ListBoardResponse) {};
     rpc set_node_time (SetNodeTimeRequest) returns (SetNodeTimeResponse) {};
-    rpc check_winner (CheckWinnerRequest) returns (CheckWinnerResponse) {};
     rpc check_timeout (CheckTimeoutRequest) returns (CheckTimeoutResponse) {};
 }
