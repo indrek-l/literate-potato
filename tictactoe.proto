@@ -30,6 +30,7 @@ message SetNodeTimeRequest {
     int32 requester_pid = 1;
     int32 target_pid = 2;
     float timestamp = 3;
+    string role = 4;
 }
 message SetNodeTimeResponse {
     string message = 1;
@@ -47,6 +48,7 @@ message SetSymbolResponse {
 }
 
 message ListBoardRequest {
+    string role = 1;
 }
 message ListBoardResponse {
     repeated string board = 1;
@@ -64,6 +66,12 @@ message AnnounceWinnerRequest {
 message AnnounceWinnerResponse {
 }
 
+message VerifyLeaderIdleRequest {
+}
+message VerifyLeaderIdleResponse {
+    bool leader_idle = 1;
+}
+
 service TicTacToe {
     rpc announce_winner (AnnounceWinnerRequest) returns (AnnounceWinnerResponse) {};
     rpc starting_player (StartingPlayerMessage) returns (StartingPlayerResponse) {};
@@ -74,4 +82,5 @@ service TicTacToe {
     rpc list_board (ListBoardRequest) returns (ListBoardResponse) {};
     rpc set_node_time (SetNodeTimeRequest) returns (SetNodeTimeResponse) {};
     rpc check_timeout (CheckTimeoutRequest) returns (CheckTimeoutResponse) {};
+    rpc verify_leader_idle (VerifyLeaderIdleRequest) returns (VerifyLeaderIdleResponse) {};
 }

@@ -59,6 +59,11 @@ class TicTacToeStub(object):
                 request_serializer=tictactoe__pb2.CheckTimeoutRequest.SerializeToString,
                 response_deserializer=tictactoe__pb2.CheckTimeoutResponse.FromString,
                 )
+        self.verify_leader_idle = channel.unary_unary(
+                '/TicTacToe/verify_leader_idle',
+                request_serializer=tictactoe__pb2.VerifyLeaderIdleRequest.SerializeToString,
+                response_deserializer=tictactoe__pb2.VerifyLeaderIdleResponse.FromString,
+                )
 
 
 class TicTacToeServicer(object):
@@ -118,6 +123,12 @@ class TicTacToeServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def verify_leader_idle(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_TicTacToeServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -165,6 +176,11 @@ def add_TicTacToeServicer_to_server(servicer, server):
                     servicer.check_timeout,
                     request_deserializer=tictactoe__pb2.CheckTimeoutRequest.FromString,
                     response_serializer=tictactoe__pb2.CheckTimeoutResponse.SerializeToString,
+            ),
+            'verify_leader_idle': grpc.unary_unary_rpc_method_handler(
+                    servicer.verify_leader_idle,
+                    request_deserializer=tictactoe__pb2.VerifyLeaderIdleRequest.FromString,
+                    response_serializer=tictactoe__pb2.VerifyLeaderIdleResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -326,5 +342,22 @@ class TicTacToe(object):
         return grpc.experimental.unary_unary(request, target, '/TicTacToe/check_timeout',
             tictactoe__pb2.CheckTimeoutRequest.SerializeToString,
             tictactoe__pb2.CheckTimeoutResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def verify_leader_idle(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/TicTacToe/verify_leader_idle',
+            tictactoe__pb2.VerifyLeaderIdleRequest.SerializeToString,
+            tictactoe__pb2.VerifyLeaderIdleResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
