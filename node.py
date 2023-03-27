@@ -1,4 +1,5 @@
 import random
+import re
 import sys
 import grpc
 import threading
@@ -76,6 +77,7 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
                     stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
                     request = tictactoe_pb2.AnnounceWinnerRequest(message=message, board=[f"{sym}:<{ts}>" for sym, ts in self.board])
                     stub.announce_winner(request)
+        
             except grpc.RpcError as e:
                 print_n(f"Node-{i} not responding: {e.details()}")  # Exception printed for debugging. Delete later.
 
@@ -95,9 +97,10 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
         return tictactoe_pb2.GetNodeTimeResponse(timestamp=time())
     
     def set_node_time(self, request, context):
-        if request.requester_pid == LEADER_PID or LEADER_PID == -1: # :unamused:
+        if request.requester_pid == LEADER_PID or LEADER_PID == -1:
             TIME_DIFF = request.timestamp - time()
-            return tictactoe_pb2.SetNodeTimeResponse(message=f"Node-{PID} new clock {datetime.fromtimestamp(request.timestamp).strftime('%H:%M:%S')}")
+            return tictactoe_pb2.SetNodeTimeResponse(message=f"Node-{PID} new clock {datetime.fromtimestamp(time() + TIME_DIFF).strftime('%H:%M:%S')}")
+        
         return tictactoe_pb2.SetNodeTimeResponse(message = f"Only the game master (Node-{LEADER_PID}) can modify the clock of Node-{PID}")
 
     def election(self, request, context):
@@ -143,6 +146,7 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
                     stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
                     message = tictactoe_pb2.StartingPlayerMessage(starting_node=self.nodes[self.moving], symbol=self.symbols[self.nodes.index(player)])
                     stub.starting_player(message)
+        
             except IndexError as e:
                 print(e)
                 print(f"list: {self.nodes} ; index: {self.moving}")
@@ -205,24 +209,32 @@ class TicTacToeClient:
                     stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
                     response = stub.get_node_time(tictactoe_pb2.GetNodeTimeRequest())
                     node_times.append(response.timestamp)
+        
             except grpc.RpcError as e:
                 print_n(f"Node-{i} not responding: {e.details()}")  # Exception printed for debugging. Delete later.
+        
         diffs = [e[1] - e[0] for e in combinations(node_times, 2)]
         return time() + (sum(diffs) / len(diffs))
 
     def synchronize_clocks(self):
         """Co-ordinate clocks between nodes using Berkeley's algorithm. Set synchronized time to server clocks."""
         print_n("Synchronizing clocks of all nodes")
+        
         for i, port in enumerate(PORTS):
-            try:
-                with grpc.insecure_channel(f"localhost:{port}") as channel:
-                    stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
-                    request = tictactoe_pb2.SetNodeTimeRequest(requester_pid=PID, target_pid=i, timestamp=self.get_sync_time())
-                    response = stub.set_node_time(request)
-                    print_n(response.message)
-            except grpc.RpcError as e:
-                print_n(f"Node-{i} not responding: {e.details()}")  # Exception printed for debugging. Delete later.
+            self.set_node_time(i, self.get_sync_time())
 
+    def set_node_time(self, node, time):
+        try:
+            with grpc.insecure_channel(f"localhost:{PORTS[node]}") as channel:
+                stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
+                request = tictactoe_pb2.SetNodeTimeRequest(requester_pid=PID, target_pid=node, timestamp=time)
+                response = stub.set_node_time(request)
+                print_n(response.message)
+        
+        except grpc.RpcError as e:
+            print_n(f"Node-{node} not responding: {e.details()}")  # Exception printed for debugging. Delete later.
+
+    
     def set_symbol(self, position, symbol):
         with grpc.insecure_channel(f"localhost:{PORTS[LEADER_PID]}") as channel:
             stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
@@ -238,6 +250,8 @@ class TicTacToeClient:
             response = stub.list_board(request)
             print_n(f"{response.board[0:3]}\n{response.board[3:6]}\n{response.board[6:9]}")
 
+    def set_time_out(self):
+        pass
 
 
 
@@ -269,7 +283,6 @@ def print_n(string):
 
 #------------------ main -------------------#
 
-
 def main():
     client = TicTacToeClient()
     server = TicTacToeServer()
@@ -280,20 +293,29 @@ def main():
     print_n("Waiting for commands")
     while True:
         command = input().lower()
+        args = command.split(" ")
+
         if command == "start-game":
             client.synchronize_clocks()
             client.elect_leader()
         elif command == "stop":
             server.server.stop(0)
             break
-        elif "set-symbol" in command:
-            args = command.split(" ")
+        elif re.fullmatch("\s*set-symbol \d, [xo]\s*", command):
             client.set_symbol(args[1].strip(","), args[2])
+
         elif command == "list-board":
             client.list_board()
-        elif command == "set-node-time":
-            args = command.split(" ")
-            client.set_node_time()
+
+        elif re.fullmatch("\s*set-node-time node-\d <\d\d:\d\d:\d\d>\s*", command):
+            node = int(args[1].split("-")[1])
+            time = datetime.strftime(args[2], "<%H:%M:%S>") #TODO "<%H:%M:%S>" to float
+            client.set_node_time(node, time)
+        
+        elif re.fullmatch("\s*set-time-out players \d\s*", command):
+            client.set_time_out()
+        elif re.fullmatch("\s*set-time-out gamer-master \d\s*", command):
+            client.set_time_out()
         else:
             print_n("Command not found")
 
