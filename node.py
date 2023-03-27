@@ -173,6 +173,7 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
     
     def set_timeout(self, request, context):
         TIMEOUTS[request.role] = request.timeout * 60
+        return tictactoe_pb2.SetTimeoutResponse()
 
 
 
