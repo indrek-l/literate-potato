@@ -72,7 +72,16 @@ message VerifyLeaderIdleResponse {
     bool leader_idle = 1;
 }
 
+message SetTimeoutRequest {
+    string role = 1;
+    int32 timeout = 2;
+}
+message SetTimeoutResponse {
+
+}
+
 service TicTacToe {
+    rpc set_timeout (SetTimeoutRequest) returns (SetTimeoutResponse) {};
     rpc announce_winner (AnnounceWinnerRequest) returns (AnnounceWinnerResponse) {};
     rpc starting_player (StartingPlayerMessage) returns (StartingPlayerResponse) {};
     rpc init_leader (InitLeaderRequest) returns (InitLeaderResponse) {};

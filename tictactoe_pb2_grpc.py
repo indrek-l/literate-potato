@@ -14,6 +14,11 @@ class TicTacToeStub(object):
         Args:
             channel: A grpc.Channel.
         """
+        self.set_timeout = channel.unary_unary(
+                '/TicTacToe/set_timeout',
+                request_serializer=tictactoe__pb2.SetTimeoutRequest.SerializeToString,
+                response_deserializer=tictactoe__pb2.SetTimeoutResponse.FromString,
+                )
         self.announce_winner = channel.unary_unary(
                 '/TicTacToe/announce_winner',
                 request_serializer=tictactoe__pb2.AnnounceWinnerRequest.SerializeToString,
@@ -68,6 +73,12 @@ class TicTacToeStub(object):
 
 class TicTacToeServicer(object):
     """Missing associated documentation comment in .proto file."""
+
+    def set_timeout(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def announce_winner(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -132,6 +143,11 @@ class TicTacToeServicer(object):
 
 def add_TicTacToeServicer_to_server(servicer, server):
     rpc_method_handlers = {
+            'set_timeout': grpc.unary_unary_rpc_method_handler(
+                    servicer.set_timeout,
+                    request_deserializer=tictactoe__pb2.SetTimeoutRequest.FromString,
+                    response_serializer=tictactoe__pb2.SetTimeoutResponse.SerializeToString,
+            ),
             'announce_winner': grpc.unary_unary_rpc_method_handler(
                     servicer.announce_winner,
                     request_deserializer=tictactoe__pb2.AnnounceWinnerRequest.FromString,
@@ -191,6 +207,23 @@ def add_TicTacToeServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class TicTacToe(object):
     """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def set_timeout(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/TicTacToe/set_timeout',
+            tictactoe__pb2.SetTimeoutRequest.SerializeToString,
+            tictactoe__pb2.SetTimeoutResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def announce_winner(request,

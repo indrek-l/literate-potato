@@ -169,7 +169,10 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
         return tictactoe_pb2.StartingPlayerResponse()
 
     def verify_leader_idle(self, request, context):
-        return tictactoe_pb2.VerifyLeaderIdleResponse(leader_idle=LEADER_IDLE)
+        return tictactoe_pb2.VerifyLeaderIdleResponse(leader_idle=LEADER_IDLE).
+    
+    def set_timeout(self, request, context):
+        TIMEOUTS[request.role] = request.timeout * 60
 
 
 
@@ -275,20 +278,14 @@ class TicTacToeClient:
                             os.execv(sys.argv[0], sys.argv)
 
     def set_time_out(self, target, timeout):
-        if target == 'players':
-            for i in range(2):
-                with grpc.insecure_channel(f"localhost:{PORTS[i]}") as channel:
+        for i, port in enumerate(PORTS):
+            try:
+                with grpc.insecure_channel(f"localhost:{port}") as channel:
                     stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
-                    response = stub.set_time_out(tictactoe_pb2.SetTimeoutRequest(timeout=timeout))
-        else:
-            with grpc.insecure_channel(f"localhost:{PORTS[2]}") as channel:
-                stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
-                response = stub.set_time_out(tictactoe_pb2.SetTimeoutRequest(timeout=timeout))
+                    response = stub.set_timeout(tictactoe_pb2.SetTimeoutRequest(role=target, timeout=timeout))
             
-
-
-        
-
+            except grpc.RpcError as e:
+                print_n(f"Node-{i} not responding 2: {e.details()}")
 
 
 
@@ -352,9 +349,10 @@ def main():
             client.set_node_time(node, timestamp)
         
         elif re.fullmatch("\s*set-time-out players \d\s*", command):
-            client.set_time_out()
+            client.set_time_out('player', int(args[2]))
+
         elif re.fullmatch("\s*set-time-out game-master \d\s*", command):
-            client.set_time_out()
+            client.set_time_out('leader', int(args[2]))
         else:
             print_n("Command not found")
 
