@@ -169,7 +169,7 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
         return tictactoe_pb2.StartingPlayerResponse()
 
     def verify_leader_idle(self, request, context):
-        return tictactoe_pb2.VerifyLeaderIdleResponse(leader_idle=LEADER_IDLE).
+        return tictactoe_pb2.VerifyLeaderIdleResponse(leader_idle=LEADER_IDLE)
     
     def set_timeout(self, request, context):
         TIMEOUTS[request.role] = request.timeout * 60
