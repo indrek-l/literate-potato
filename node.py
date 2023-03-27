@@ -236,7 +236,7 @@ class TicTacToeClient:
             stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
             request = tictactoe_pb2.ListBoardRequest()
             response = stub.list_board(request)
-            print_n(response.board)
+            print_n(f"{response.board[0:3]}\n{response.board[3:6]}\n{response.board[6:9]}")
 
 
 
