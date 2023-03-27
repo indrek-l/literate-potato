@@ -59,6 +59,7 @@ message CheckTimeoutResponse {
 
 message AnnounceWinnerRequest {
     string message = 1;
+    repeated string board = 2;
 }
 message AnnounceWinnerResponse {
 }

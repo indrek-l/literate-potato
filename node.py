@@ -35,10 +35,12 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
     def set_symbol(self, request, context):
         if self.nodes[self.moving] == request.sender_node:
             if self.symbols[self.moving] == request.symbol:
-                if self.board[request.position-1] == "_":
+                if self.board[request.position-1][0] == "_":
                     self.board[request.position-1] = (request.symbol, datetime.fromtimestamp(request.timestamp).strftime('%H:%M:%S'))
                     
                     self.check_winner()
+                    
+                    self.moving = self.nodes[self.nodes.index(self.moving)-1]
 
                     return tictactoe_pb2.SetSymbolResponse(success=True, message=f"Move successful. Symbol {request.symbol} set at position {request.position}")
                 
@@ -60,12 +62,23 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
         if '_' != self.board[2][0] == self.board[4][0] == self.board[6][0]:
             winner = self.board[2][0]
 
-        if not winner and '_' not in self.board:
-            return tictactoe_pb2.AnnounceWinnerRequest(message="The game ended with a tie", board=[f"{sym}:<{ts}>" for sym, ts in self.board])
+        if not winner and '_' not in [e[0] for e in self.board]:
+            self.send_winner_message(message="The game ended with a tie")
         
         if winner:
-            return tictactoe_pb2.AnnounceWinnerRequest(message=f"The winner is Node-{self.nodes[self.symbols.index(winner)]} ({winner})", board=[f"{sym}:<{ts}>" for sym, ts in self.board])
-            
+            self.send_winner_message(message=f"The winner is Node-{self.nodes[self.symbols.index(winner)]} ({winner})")
+        
+    def send_winner_message(self, message):
+        print_n("Synchronizing clocks of all nodes")
+        for i, port in enumerate(PORTS):
+            try:
+                with grpc.insecure_channel(f"localhost:{port}") as channel:
+                    stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
+                    request = tictactoe_pb2.AnnounceWinnerRequest(message=message, board=[f"{sym}:<{ts}>" for sym, ts in self.board])
+                    stub.announce_winner(request)
+            except grpc.RpcError as e:
+                print_n(f"Node-{i} not responding: {e.details()}")  # Exception printed for debugging. Delete later.
+
     def announce_winner(self, request, context):
         print_n(request.message)
         print_n(request.board)
@@ -120,21 +133,27 @@ class TicTacToeServicer(tictactoe_pb2_grpc.TicTacToeServicer):
         self.nodes.remove(PID)
         self.symbols = ["x", "o"]
         random.shuffle(self.symbols)
-        self.moving = random.randint(0,2)
+        self.moving = random.randint(0,1)
 
         print_n("Starting game...")
 
         for player in self.nodes:
-            with grpc.insecure_channel(f"localhost:{PORTS[player]}") as channel:
-                stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
-                message = tictactoe_pb2.StartingPlayerMessage(starting_node=self.nodes[self.moving], symbol=self.symbols[self.nodes.index(player)])
-                stub.starting_player(message)
+            try:
+                with grpc.insecure_channel(f"localhost:{PORTS[player]}") as channel:
+                    stub = tictactoe_pb2_grpc.TicTacToeStub(channel)
+                    message = tictactoe_pb2.StartingPlayerMessage(starting_node=self.nodes[self.moving], symbol=self.symbols[self.nodes.index(player)])
+                    stub.starting_player(message)
+            except IndexError as e:
+                print(e)
+                print(f"list: {self.nodes} ; index: {self.moving}")
+                print(f"list: {self.symbols} ; index: {self.nodes.index(player)} ; list: {self.nodes} ; element: {player}")
 
         print_n(f"Node-{self.nodes[self.moving]} goes first.")
 
         return tictactoe_pb2.InitLeaderResponse()
     
     def starting_player(self, request, context):
+        print_n("NEW GAME!")
         print_n(f"Your symbol is {request.symbol}.")
         print_n(f"Node-{request.starting_node} goes first.")
         return tictactoe_pb2.StartingPlayerResponse()
@@ -242,7 +261,7 @@ def send_election_message(message):
     return tictactoe_pb2.ElectionResponse(leader_pid=PID)
 
 def print_n(string):
-    print("\n", string)
+    print(string)
     print(f"Node-{PID}> ",end="")
     return
 
