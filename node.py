@@ -314,7 +314,7 @@ def main():
         
         elif re.fullmatch("\s*set-time-out players \d\s*", command):
             client.set_time_out()
-        elif re.fullmatch("\s*set-time-out gamer-master \d\s*", command):
+        elif re.fullmatch("\s*set-time-out game-master \d\s*", command):
             client.set_time_out()
         else:
             print_n("Command not found")
